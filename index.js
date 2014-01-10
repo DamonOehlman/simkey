@@ -15,60 +15,45 @@
 module.exports = function(target, opts, code) {
 
   function dispatchKey(c) {
-    var evt;
-    var haveKeyboardEvent = typeof KeyboardEvent != 'undefined';
-    var initKeyEvent = haveKeyboardEvent && KeyboardEvent.prototype.initKeyEvent;
+    var evt = document.createEvent('KeyboardEvent');
 
-    // if we have an initKeyEvent then we are likely in firefox
-    // which is a little fussier than chrome these days
-    if (typeof initKeyEvent == 'function') {
-      evt = document.createEvent('KeyboardEvent');
-      initKeyEvent.call(
-        evt,
-        opts.type || 'keydown',
-        true,
-        true,
-        document.defaultView,
-        opts.ctrl || opts.ctrlKey,
-        opts.alt || opts.altKey,
-        opts.shift || opts.shiftKey,
-        opts.meta || opts.metaKey,
-        (opts.type || 'keydown') === 'keydown' ? c : 0,
-        (opts.type || 'keydown') === 'keypress' ? c : 0
-      );
-    }
-    // otherwise if we have a KeyboardEvent structure then create that
-    else if (haveKeyboardEvent) {
-      evt = new KeyboardEvent(opts.type || 'keydown', {
-        ctrlKey: opts.ctrl || opts.ctrlKey,
-        altKey: opts.alt || opts.altKey,
-        shiftKey: opts.shift || opts.shiftKey,
-        metaKey: opts.meta || opts.metaKey
-      });
+    (evt.initKeyboardEvent || evt.initKeyEvent).call(
+      evt,
+      opts.type || 'keydown',
+      true, // bubbles
+      true, // cancelable
+      document.defaultView, // viewArg: should be window
+      opts.ctrl || opts.ctrlKey,
+      opts.alt || opts.altKey,
+      opts.shift || opts.shiftKey,
+      opts.meta || opts.metaKey,
+      c, // keyCodeArg : unsigned long the virtual key code, else 0
+      c // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0
+    );
 
-      Object.defineProperty(evt, 'keyCode', {
-        get: function() {
-          return c;
-        }
-      });
-    }
-    // otherwise, fall back to very old school implementations
-    else {
-      evt = document.createEvent('KeyboardEvent');
-      (evt.initKeyboardEvent || evt.initKeyEvent).call(
-        evt,
-        opts.type || 'keydown',
-        true, // bubbles
-        true, // cancelable
-        document.defaultView, // viewArg: should be window
-        opts.ctrl || opts.ctrlKey,
-        opts.alt || opts.altKey,
-        opts.shift || opts.shiftKey,
-        opts.meta || opts.metaKey,
-        c, // keyCodeArg : unsigned long the virtual key code, else 0
-        c // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0
-      );
-    }
+    Object.defineProperty(evt, 'ctrlKey', {
+      get: function() {
+        return opts.ctrl || opts.ctrlKey || false;
+      }
+    });
+
+    Object.defineProperty(evt, 'altKey', {
+      get: function() {
+        return opts.alt || opts.altKey || false
+      }
+    });
+
+    Object.defineProperty(evt, 'keyCode', {
+      get: function() {
+        return c;
+      }
+    });
+
+    Object.defineProperty(evt, 'which', {
+      get: function() {
+        return c;
+      }
+    });
 
     setTimeout(function() {
       target.dispatchEvent(evt);

@@ -9,25 +9,25 @@ test('can create a test element', function(t) {
   t.ok(testTarget instanceof HTMLElement, 'test target is a valid html element');
 });
 
-test('can simulate a keypress with a alt modifier in an element', function(t) {
+test('can simulate a keypress with a meta modifier in an element', function(t) {
   t.plan(2);
 
   testTarget.addEventListener('keydown', function handleKey(evt) {
     t.equal(evt.keyCode, 65, 'got expected keycode');
-    t.ok(evt.altKey, 'altKey flag set');
+    t.ok(evt.metaKey, 'metaKey flag set');
     testTarget.removeEventListener('keydown', handleKey);
   });
 
-  simkey(testTarget, { alt: true }, 65);
+  simkey(testTarget, { meta: true }, 65);
 });
 
-test('can perform partial application of simkey with alt modifier', function(t) {
+test('can perform partial application of simkey with meta modifier', function(t) {
   var keys = [65, 67];
   var sendKey;
 
   testTarget.addEventListener('keydown', function handleKey(evt) {
     t.equal(evt.keyCode, keys.shift(), 'got expected key in the expected order');
-    t.ok(evt.altKey, 'altKey flag set');
+    t.ok(evt.metaKey, 'metaKey flag set');
     
     if (keys.length === 0) {
       testTarget.removeEventListener('keydown', handleKey);
@@ -35,7 +35,7 @@ test('can perform partial application of simkey with alt modifier', function(t) 
   });
 
   t.plan(keys.length * 2 + 1);
-  sendKey = simkey(testTarget, { alt: true });
+  sendKey = simkey(testTarget, { meta: true });
   t.equal(typeof sendKey, 'function', 'deferred execution of simkey');
   keys.forEach(sendKey);
 });

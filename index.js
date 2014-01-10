@@ -31,8 +31,8 @@ module.exports = function(target, opts, code) {
         document.defaultView,
         opts.ctrl || opts.ctrlKey,
         opts.alt || opts.altKey,
-        (opts || {}).shift || false,
-        (opts || {}).meta || false,
+        opts.shift || opts.shiftKey,
+        opts.meta || opts.metaKey,
         (opts.type || 'keydown') === 'keydown' ? c : 0,
         (opts.type || 'keydown') === 'keypress' ? c : 0
       );
@@ -41,7 +41,9 @@ module.exports = function(target, opts, code) {
     else if (haveKeyboardEvent) {
       evt = new KeyboardEvent(opts.type || 'keydown', {
         ctrlKey: opts.ctrl || opts.ctrlKey,
-        altKey: opts.alt || opts.altKey
+        altKey: opts.alt || opts.altKey,
+        shiftKey: opts.shift || opts.shiftKey,
+        metaKey: opts.meta || opts.metaKey
       });
 
       Object.defineProperty(evt, 'keyCode', {
@@ -59,10 +61,10 @@ module.exports = function(target, opts, code) {
         true, // bubbles
         true, // cancelable
         document.defaultView, // viewArg: should be window
-        opts.ctrl || opts.ctrlKey, // ctrlKeyArg
-        (opts || {}).alt || false, // altKeyArg
-        (opts || {}).shift || false, // shiftKeyArg
-        (opts || {}).meta || false, // metaKeyArg
+        opts.ctrl || opts.ctrlKey,
+        opts.alt || opts.altKey,
+        opts.shift || opts.shiftKey,
+        opts.meta || opts.metaKey,
         c, // keyCodeArg : unsigned long the virtual key code, else 0
         c // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0
       );

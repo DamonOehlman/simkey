@@ -1,6 +1,6 @@
 {
   "name": "simkey",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Cross browser compatible KeyboardEvent dispatcher",
   "main": "index.js",
   "directories": {
@@ -44,5 +44,5 @@
       "iphone/6.0..latest",
       "android-browser/4.2..latest"
     ]
-  }  
+  }
 }

@@ -14,6 +14,8 @@
 **/
 module.exports = function(target, opts, code) {
 
+  var modifiers = ['ctrl', 'alt', 'shift', 'meta'];
+
   function dispatchKey(c) {
     var evt = document.createEvent('KeyboardEvent');
 
@@ -31,17 +33,13 @@ module.exports = function(target, opts, code) {
       c // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0
     );
 
-    Object.defineProperty(evt, 'ctrlKey', {
-      get: function() {
-        return opts.ctrl || opts.ctrlKey || false;
-      }
-    });
-
-    Object.defineProperty(evt, 'altKey', {
-      get: function() {
-        return opts.alt || opts.altKey || false
-      }
-    });
+    modifiers.forEach(function(modifier) {
+      Object.defineProperty(evt, modifier + 'Key', {
+        get: function() {
+          return opts[modifier] || opts[modifier + 'Key'] || false;
+        }
+      })
+    })
 
     Object.defineProperty(evt, 'keyCode', {
       get: function() {

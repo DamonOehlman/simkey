@@ -10,27 +10,37 @@ other modules that deal with key events.
 [![browser support](https://ci.testling.com/DamonOehlman/simkey.png)](https://ci.testling.com/DamonOehlman/simkey)
 
 
+
 ## Example Usage
 
 ```js
 var simkey = require('simkey');
+var input = document.createElement('input');
 
-document.body.addEventListener('keydown', function(evt) {
-  console.log('received key code: ' + evt.keyCode);
+document.body.appendChild(input);
+
+input.addEventListener('keydown', function(evt) {
+  console.log('key down: ' + evt.keyCode);
+});
+
+input.addEventListener('keyup', function(evt) {
+  console.log('key up: ', evt.keyCode);
 });
 
 // simulate a keypress on the document body
-simkey(document.body, 65);
+simkey(input, 65);
 
 // simulate a number of keypress using simkey's partial application
-[65, 68].forEach(simkey(document.body));
+[65, 68]
+  .map(simkey(input))
+  .map(simkey(input, { type: 'keyup' }));
 ```
 
 ## License(s)
 
 ### MIT
 
-Copyright (c) 2014 Damon Oehlman <damon.oehlman@gmail.com>
+Copyright (c) 2015 Damon Oehlman <damon.oehlman@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

@@ -56,6 +56,8 @@ module.exports = function(target, opts, code) {
     setTimeout(function() {
       target.dispatchEvent(evt);
     }, 0);
+
+    return c;
   }
 
   // if we have no opts, but have been passed a simple value as opts
